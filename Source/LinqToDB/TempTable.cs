@@ -578,13 +578,13 @@ namespace LinqToDB
 
 		public virtual void Dispose()
 		{
-			_table.DropTable();
+			_table.DropTable(throwExceptionIfNotExists: false);
 		}
 
 #if !NETFRAMEWORK
 		public ValueTask DisposeAsync()
 		{
-			return new ValueTask(_table.DropTableAsync());
+			return new ValueTask(_table.DropTableAsync(throwExceptionIfNotExists: false));
 		}
 #endif
 	}

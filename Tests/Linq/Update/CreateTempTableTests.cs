@@ -243,5 +243,31 @@ namespace Tests.xUpdate
 				Assert.AreEqual(false, tableExists);
 			}
 		}
+
+		[Test]
+		public void CreateTable_NoDisposeError([DataSources(false)] string context)
+		{
+			using var db = new TestDataConnection(context);
+			db.DropTable<int>("TempTable", throwExceptionIfNotExists: false);
+
+			var tempTable = db.CreateTempTable<IDTable>("TempTable");
+			var table2 = db.GetTable<IDTable>().TableOptions(TableOptions.IsTemporary).TableName("TempTable");
+			table2.Drop();
+			tempTable.Dispose();
+		}
+
+#if !NETFRAMEWORK
+		[Test]
+		public async Task CreateTable_NoDisposeErrorAsync([DataSources(false)] string context)
+		{
+			using var db = new TestDataConnection(context);
+			await db.DropTableAsync<int>("TempTable", throwExceptionIfNotExists: false);
+
+			var tempTable = await db.CreateTempTableAsync<IDTable>("TempTable");
+			var table2 = db.GetTable<IDTable>().TableOptions(TableOptions.IsTemporary).TableName("TempTable");
+			await table2.DropAsync();
+			await tempTable.DisposeAsync();
+		}
+#endif
 	}
 }
