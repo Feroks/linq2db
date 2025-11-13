@@ -1710,6 +1710,25 @@ namespace LinqToDB.Linq.Builder
 							{
 								predicate = ConvertInPredicate(context!, e);
 							}
+							
+#if NET8_0_OR_GREATER
+							if (e.Method.DeclaringType == typeof(MemoryExtensions)
+								&& e is { Arguments: [MethodCallExpression { Method.Name: "op_Implicit", Type.Name: "ReadOnlySpan`1", Arguments: [{ } spanSource] }, _, ..] })
+							{
+								var containsMethod = EnumerableMethods
+									.First(m => m.Name == "Contains" && m.GetParameters().Length == e.Arguments.Count)
+									.MakeGenericMethod(e.Arguments[1].Type);
+
+								var expr = Expression.Call(
+									containsMethod,
+									e.Arguments.Count == 2
+										? [spanSource, e.Arguments[1]]
+										: [spanSource, e.Arguments[1], e.Arguments[2]]
+								);
+
+								predicate = ConvertInPredicate(context!, expr);
+							}
+#endif
 						}
 						else if (e.Method.Name == "ContainsValue" && typeof(Dictionary<,>).IsSameOrParentOf(e.Method.DeclaringType!))
 						{
@@ -2629,7 +2648,14 @@ namespace LinqToDB.Linq.Builder
 		{
 			var e        = expression;
 			var argIndex = e.Object != null ? 0 : 1;
-			var arr      = e.Object ?? e.Arguments[0];
+			var arr      = e.Object ?? e.Arguments[0] switch
+			{
+				// This is a custom code
+				// .NET 10 added an occasional convert statement on array initialization
+				// This is caused by ReadOnlySpan overload. We simply try to extract it because the type should already be correct
+				UnaryExpression { Operand: NewArrayExpression x } => x,
+				var x => x
+			};
 			var arg      = e.Arguments[argIndex];
 
 			ISqlExpression? expr = null;

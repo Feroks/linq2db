@@ -66,7 +66,7 @@ namespace LinqToDB.SqlQuery
 				{
 					switch (Expression)
 					{
-						case SqlField    field  : return field.Alias ?? field.PhysicalName;
+						case SqlField    sqlField  : return sqlField.Alias ?? sqlField.PhysicalName;
 						case SqlColumn   column : return column.Alias;
 						case SelectQuery query:
 							{

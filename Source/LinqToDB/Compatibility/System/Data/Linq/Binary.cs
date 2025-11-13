@@ -1,3 +1,4 @@
+#if !NETFRAMEWORK
 #nullable disable
 using System;
 using System.Text;
@@ -131,4 +132,4 @@ namespace System.Data.Linq
 		}
 	}
 }
-
+#endif

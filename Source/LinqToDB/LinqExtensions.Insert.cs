@@ -48,7 +48,7 @@ namespace LinqToDB
 		/// <param name="setter">Insert expression. Expression supports only target table record new expression with field initializers.</param>
 		/// <param name="token">Optional asynchronous operation cancellation token.</param>
 		/// <returns>Inserted record.</returns>
-		public static Task<TTarget> InsertWithOutputAsync<TTarget>(
+		public static ValueTask<TTarget> InsertWithOutputAsync<TTarget>(
 			                this ITable<TTarget>      target,
 			[InstantHandle] Expression<Func<TTarget>> setter,
 							CancellationToken         token = default)
@@ -101,7 +101,7 @@ namespace LinqToDB
 		/// <param name="obj">Object with data to insert.</param>
 		/// <param name="token">Optional asynchronous operation cancellation token.</param>
 		/// <returns>Inserted record.</returns>
-		public static Task<TTarget> InsertWithOutputAsync<TTarget>(
+		public static ValueTask<TTarget> InsertWithOutputAsync<TTarget>(
 			                this ITable<TTarget> target,
 			[InstantHandle] TTarget              obj,
 			CancellationToken                             token = default)
@@ -161,7 +161,7 @@ namespace LinqToDB
 		/// Expression supports only record new expression with field initializers.</param>
 		/// <param name="token">Optional asynchronous operation cancellation token.</param>
 		/// <returns>Inserted record.</returns>
-		public static Task<TOutput> InsertWithOutputAsync<TTarget,TOutput>(
+		public static ValueTask<TOutput> InsertWithOutputAsync<TTarget,TOutput>(
 			                this ITable<TTarget>              target,
 			[InstantHandle] Expression<Func<TTarget>>         setter,
 			                Expression<Func<TTarget,TOutput>> outputExpression,
@@ -630,7 +630,7 @@ namespace LinqToDB
 		/// <param name="source">Insert query.</param>
 		/// <param name="token">Optional asynchronous operation cancellation token.</param>
 		/// <returns>Inserted record.</returns>
-		public static Task<TTarget> InsertWithOutputAsync<TSource,TTarget>(
+		public static ValueTask<TTarget> InsertWithOutputAsync<TSource,TTarget>(
 			this ISelectInsertable<TSource,TTarget> source,
 			     CancellationToken                  token = default)
 		{

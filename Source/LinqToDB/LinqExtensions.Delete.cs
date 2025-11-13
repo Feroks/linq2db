@@ -42,7 +42,7 @@ namespace LinqToDB
 		/// <param name="source">Source query, that returns data for delete operation.</param>
 		/// <param name="token">Optional asynchronous operation cancellation token.</param>
 		/// <returns>Array of records.</returns>
-		public static Task<TSource[]> DeleteWithOutput<TSource>(
+		public static ValueTask<TSource[]> DeleteWithOutput<TSource>(
 			                this IQueryable<TSource>          source,
 							CancellationToken                  token = default)
 		{
@@ -55,6 +55,7 @@ namespace LinqToDB
 						null,
 						MethodHelper.GetMethodInfo(DeleteWithOutput, source),
 						currentSource.Expression))
+				.AsAsyncEnumerable()
 				.ToArrayAsync(token);
 		}
 
@@ -96,7 +97,7 @@ namespace LinqToDB
 		/// Expression supports only record new expression with field initializers.</param>
 		/// <param name="token">Optional asynchronous operation cancellation token.</param>
 		/// <returns>Array of records.</returns>
-		public static Task<TOutput[]> DeleteWithOutputAsync<TSource,TOutput>(
+		public static ValueTask<TOutput[]> DeleteWithOutputAsync<TSource,TOutput>(
 			                this IQueryable<TSource>           source,
 			                Expression<Func<TSource, TOutput>> outputExpression,
 							CancellationToken                  token = default)
@@ -112,6 +113,7 @@ namespace LinqToDB
 						MethodHelper.GetMethodInfo(DeleteWithOutput, source, outputExpression),
 						currentSource.Expression,
 						Expression.Quote(outputExpression)))
+				.ToAsyncEnumerable()
 				.ToArrayAsync(token);
 		}
 

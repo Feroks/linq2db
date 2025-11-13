@@ -40,7 +40,7 @@ namespace LinqToDB.SqlQuery
 
 		public IList<SqlMergeOperationClause> Operations { get; }               = new List<SqlMergeOperationClause>();
 
-		public bool                           HasIdentityInsert                 => Operations.Any(o => o.OperationType == MergeOperationType.Insert && o.Items.Any(item => item.Column is SqlField field && field.IsIdentity));
+		public bool                           HasIdentityInsert                 => Operations.Any(o => o.OperationType == MergeOperationType.Insert && o.Items.Any(item => item.Column is SqlField sqlField && sqlField.IsIdentity));
 
 		public override QueryType        QueryType   => QueryType.Merge;
 
